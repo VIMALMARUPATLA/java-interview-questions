@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Interview Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 80px 20px 20px;
+            background: linear-gradient(135deg, #f0f2f5, #dfe4ea);
+            color: #2d3436;
+            transition: all 0.4s ease;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #0984e3;
+        }
+        .navbar input {
+            padding: 8px 15px;
+            border: 1px solid #dfe6e9;
+            border-radius: 20px;
+            font-size: 1em;
+            width: 200px;
+        }
+        .toggle-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #0984e3, #00b894);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .toggle-btn:hover {
+            background: linear-gradient(45deg, #00b894, #0984e3);
+            transform: scale(1.05);
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .category {
+            margin-bottom: 50px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .category:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            cursor: pointer;
+            background: #fff;
+            border-radius: 15px 15px 0 0;
+        }
+        .category-header h2 {
+            color: #0984e3;
+            font-size: 1.8em;
+            margin: 0;
+        }
+        .category-header span {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+        .questions-wrapper {
+            display: none;
+            padding: 0 25px 25px;
+        }
+        .question {
+            border-bottom: 1px solid #dfe6e9;
+            padding: 20px 0;
+        }
+        .question:last-child {
+            border-bottom: none;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2d3436;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+        .question-header:hover {
+            background: #f1f3f5;
+            color: #d63031;
+        }
+        .question-header span {
+            font-size: 1.1em;
+            transition: transform 0.3s ease;
+        }
+        .answer {
+            display: none;
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #636e72;
+            line-height: 1.7;
+            font-size: 1em;
+            border-left: 4px solid #0984e3;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #2d3436, #1e272e);
+            color: #dfe6e9;
+        }
+        .dark-mode .navbar {
+            background: #353b48;
+        }
+        .dark-mode .navbar h1 {
+            color: #74b9ff;
+        }
+        .dark-mode .category {
+            background: #353b48;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        .dark-mode .category-header {
+            background: #353b48;
+        }
+        .dark-mode .category-header h2 {
+            color: #74b9ff;
+        }
+        .dark-mode .question-header {
+            color: #dfe6e9;
+        }
+        .dark-mode .question-header:hover {
+            background: #57606f;
+            color: #ff7675;
+        }
+        .dark-mode .answer {
+            background: #40444b;
+            color: #b2bec3;
+            border-left: 4px solid #74b9ff;
+        }
+        .dark-mode .progress {
+            background: #353b48;
+            color: #dfe6e9;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Java Interview Prep</h1>
+        <input type="text" id="search" placeholder="Search questions..." onkeyup="searchQuestions()">
+        <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </div>
+    <div class="container">
+        <div id="questions-container"></div>
+    </div>
+    <div class="progress" id="progress">Progress: 0/215</div>
+
+    <script>
+        const questionsData = [
+            {
+                category: "Core Java (20 Questions)",
+                questions: [
+                    { q: "1. What are the main features of Java?", a: "Java is a high-level, object-oriented programming language with features like: <br>- <strong>Platform Independence</strong>: Write once, run anywhere (WORA) via JVM.<br>- <strong>Object-Oriented</strong>: Supports encapsulation, inheritance, polymorphism, and abstraction.<br>- <strong>Robust</strong>: Strong memory management, exception handling, and type checking.<br>- <strong>Secure</strong>: No explicit pointers, automatic garbage collection, and sandboxed execution.<br>- <strong>Multithreaded</strong>: Built-in support for concurrent programming.<br>- <strong>Simple</strong>: No complex features like pointers or operator overloading.<br>- <strong>Portable</strong>: Consistent behavior across platforms due to bytecode.<br>- <strong>High Performance</strong>: JIT compiler optimizes bytecode to native code." },
+                    { q: "2. Explain the difference between JDK, JRE, and JVM.", a: "- <strong>JDK (Java Development Kit)</strong>: A software development kit that includes JRE, compiler (javac), and tools (e.g., debugger) to develop Java applications.<br>- <strong>JRE (Java Runtime Environment)</strong>: A runtime environment that includes JVM and libraries to run Java applications but not develop them.<br>- <strong>JVM (Java Virtual Machine)</strong>: An abstract machine that interprets bytecode, manages memory, and provides platform independence." },
+                    { q: "3. What is the purpose of the final keyword in Java?", a: "The <code>final</code> keyword: <br>- For <strong>variables</strong>: Makes them constants (immutable after initialization).<br>- For <strong>methods</strong>: Prevents overriding in subclasses.<br>- For <strong>classes</strong>: Prevents inheritance (e.g., <code>String</code> is final)." },
+                    { q: "4. What are wrapper classes in Java?", a: "Wrapper classes (e.g., <code>Integer</code>, <code>Double</code>, <code>Boolean</code>) provide object representations of primitive types (e.g., <code>int</code>, <code>double</code>, <code>boolean</code>). They enable primitives to be used in collections and provide utility methods (e.g., <code>Integer.parseInt()</code>)." },
+                    { q: "5. Explain the difference between == and .equals().", a: "- <code>==</code>: Compares references (memory addresses) for objects or values for primitives.<br>- <code>.equals()</code>: Compares object content (e.g., string values). Default implementation in <code>Object</code> class uses <code>==</code>, but classes like <code>String</code> override it for content comparison." },
+                    { q: "6. What is autoboxing and unboxing in Java?", a: "- <strong>Autoboxing</strong>: Automatic conversion of primitives to wrapper objects (e.g., <code>int</code> to <code>Integer</code>).<br>- <strong>Unboxing</strong>: Automatic conversion of wrapper objects to primitives (e.g., <code>Integer</code> to <code>int</code>).<br>Example: <code>Integer i = 10;</code> (autoboxing), <code>int j = i;</code> (unboxing)." },
+                    { q: "7. Explain method overloading and method overriding.", a: "- <strong>Overloading</strong>: Multiple methods with the same name but different parameters (number, type, or order) in the same class. Compile-time polymorphism.<br>- <strong>Overriding</strong>: Subclass provides a specific implementation of a method defined in its superclass. Runtime polymorphism; requires same method signature." },
+                    { q: "8. What are access modifiers in Java?", a: "Access modifiers control visibility: <br>- <code>public</code>: Accessible everywhere.<br>- <code>protected</code>: Accessible within the package and in subclasses outside the package.<br>- <code>default</code> (package-private): Accessible only within the package if no modifier is specified.<br>- <code>private</code>: Accessible only within the class." },
+                    { q: "9. What is the difference between String, StringBuilder, and StringBuffer?", a: "- <code>String</code>: Immutable, thread-safe by default, creates new objects on modification.<br>- <code>StringBuilder</code>: Mutable, not thread-safe, faster for single-threaded operations.<br>- <code>StringBuffer</code>: Mutable, thread-safe (synchronized), slower due to synchronization." },
+                    { q: "10. What is the purpose of the static keyword?", a: "The <code>static</code> keyword: <br>- For <strong>variables</strong>: Belongs to the class, shared across instances.<br>- For <strong>methods</strong>: Can be called without an instance, belongs to the class.<br>- For <strong>blocks</strong>: Executes once during class loading." },
+                    { q: "11. Explain the difference between this and super keywords.", a: "- <code>this</code>: Refers to the current instance; used to distinguish instance variables from parameters or call other constructors.<br>- <code>super</code>: Refers to the superclass; used to call superclass methods, constructors, or access superclass members." },
+                    { q: "12. What is the difference between an interface and an abstract class?", a: "- <strong>Interface</strong>: Fully abstract, supports multiple inheritance, only constants and method declarations (default/static methods since Java 8).<br>- <strong>Abstract Class</strong>: Can have abstract and concrete methods, single inheritance, instance variables allowed." },
+                    { q: "13. What is a constructor, and what are its types?", a: "A constructor initializes an object. Types: <br>- <strong>Default</strong>: No parameters, provided by compiler if none defined.<br>- <strong>Parameterized</strong>: Takes parameters to initialize fields.<br>- <strong>Copy</strong>: Creates an object by copying another (not built-in)." },
+                    { q: "14. How does garbage collection work in Java?", a: "The JVM’s garbage collector (GC) reclaims memory from objects no longer referenced. It uses: <br>- <strong>Mark-and-Sweep</strong>: Marks reachable objects, sweeps unreferenced ones.<br>- <strong>Generational Collection</strong>: Divides heap into Young (Eden, Survivor) and Old generations for efficiency." },
+                    { q: "15. What is the purpose of try-catch-finally in exception handling?", a: "- <code>try</code>: Block where exceptions might occur.<br>- <code>catch</code>: Handles specific exceptions thrown in <code>try</code>.<br>- <code>finally</code>: Executes regardless of exception (e.g., cleanup), unless <code>System.exit()</code> is called." },
+                    { q: "16. Explain checked and unchecked exceptions.", a: "- <strong>Checked</strong>: Must be handled or declared (e.g., <code>IOException</code>), checked at compile-time.<br>- <strong>Unchecked</strong>: Subclasses of <code>RuntimeException</code> (e.g., <code>NullPointerException</code>), not enforced at compile-time." },
+                    { q: "17. What are functional interfaces in Java?", a: "Interfaces with a single abstract method (e.g., <code>Runnable</code>, <code>Comparator</code>). Used with lambda expressions in Java 8+; annotated with <code>@FunctionalInterface</code>." },
+                    { q: "18. What is the volatile keyword in Java?", a: "Ensures a variable’s value is always read from and written to main memory, preventing thread caching. Used for visibility in multithreading." },
+                    { q: "19. What is the difference between break, continue, and return?", a: "- <code>break</code>: Exits the current loop or switch.<br>- <code>continue</code>: Skips the current iteration, proceeds to the next.<br>- <code>return</code>: Exits the method, optionally returning a value." },
+                    { q: "20. What are Java annotations and how are they used?", a: "Annotations (e.g., <code>@Override</code>, <code>@Deprecated</code>) provide metadata about code. Used for compiler instructions, runtime processing, or framework configuration (e.g., Spring)." }
+                ]
+            },
+            {
+                category: "OOP (10 Questions)",
+                questions: [
+                    { q: "1. What are the four pillars of Object-Oriented Programming?", a: "- <strong>Encapsulation</strong>: Bundling data and methods, restricting access via modifiers.<br>- <strong>Inheritance</strong>: Reusing code via parent-child relationships.<br>- <strong>Polymorphism</strong>: Same interface, different implementations (overloading/overriding).<br>- <strong>Abstraction</strong>: Hiding complexity, showing essentials (abstract classes/interfaces)." },
+                    { q: "2. What is encapsulation in Java?", a: "Encapsulation bundles data (fields) and methods, restricting direct access using <code>private</code> modifiers and providing <code>public</code> getters/setters." },
+                    { q: "3. What is inheritance and its types?", a: "Inheritance allows a class to inherit properties/methods from another. Types: <br>- <strong>Single</strong>: One parent class.<br>- <strong>Multilevel</strong>: Chain of inheritance (A → B → C).<br>- <strong>Hierarchical</strong>: Multiple children, one parent.<br>- Java doesn’t support multiple inheritance of classes (only via interfaces)." },
+                    { q: "4. Explain polymorphism with examples.", a: "Polymorphism allows different behaviors for the same method: <br>- <strong>Compile-time (Overloading)</strong>: <code>add(int a, int b)</code> vs. <code>add(double a, double b)</code>.<br>- <strong>Runtime (Overriding)</strong>: Subclass overrides superclass method (e.g., <code>Animal.speak()</code> vs. <code>Dog.speak()</code>)." },
+                    { q: "5. What is an abstract class, and when should it be used?", a: "An abstract class can’t be instantiated and may contain abstract/concrete methods. Use it for partial implementation shared across subclasses (e.g., <code>Animal</code> with <code>move()</code>)." },
+                    { q: "6. What is an interface, and how does it differ from an abstract class?", a: "An interface defines a contract (no implementation pre-Java 8). Unlike abstract classes, it supports multiple inheritance and only constants/method declarations." },
+                    { q: "7. What is method overriding?", a: "A subclass provides a specific implementation of a superclass method with the same signature. Requires <code>@Override</code> annotation for clarity." },
+                    { q: "8. Explain the concept of aggregation and composition.", a: "- <strong>Aggregation</strong>: “Has-a” relationship, weaker (e.g., <code>Car</code> has <code>Wheels</code>, but wheels can exist independently).<br>- <strong>Composition</strong>: Stronger ownership (e.g., <code>House</code> has <code>Rooms</code>, rooms die with the house)." },
+                    { q: "9. How does Java support multiple inheritance?", a: "Java supports multiple inheritance via interfaces (a class can implement multiple interfaces) but not through classes to avoid the diamond problem." },
+                    { q: "10. What is dependency injection in OOP?", a: "Dependency Injection (DI) provides dependencies (e.g., objects) to a class rather than the class creating them. Improves modularity (e.g., Spring <code>@Autowired</code>)." }
+                ]
+            },
+            {
+                category: "Collections & Data Structures (18 Questions)",
+                questions: [
+                    { q: "1. What is the Java Collections Framework?", a: "A set of classes and interfaces (e.g., <code>List</code>, <code>Set</code>, <code>Map</code>) for storing and manipulating groups of objects, providing reusable data structures." },
+                    { q: "2. What is the difference between ArrayList and LinkedList?", a: "- <code>ArrayList</code>: Dynamic array, fast random access (<code>O(1)</code>), slow insertions/deletions (<code>O(n)</code>).<br>- <code>LinkedList</code>: Doubly-linked list, slow access (<code>O(n)</code>), fast insertions/deletions (<code>O(1)</code>)." },
+                    { q: "3. How does HashMap work internally in Java?", a: "Uses an array of buckets. Keys are hashed (<code>hashCode()</code>), mapped to an index, and stored with values. Handles collisions via linked lists (or trees in Java 8+ for large buckets)." },
+                    { q: "4. What are the differences between HashMap, TreeMap, and LinkedHashMap?", a: "- <code>HashMap</code>: Unordered, O(1) access, allows null keys/values.<br>- <code>TreeMap</code>: Sorted by keys (natural order or comparator), O(log n) access, no null keys.<br>- <code>LinkedHashMap</code>: Maintains insertion order, O(1) access, allows nulls." },
+                    { q: "5. What is the difference between HashSet and TreeSet?", a: "- <code>HashSet</code>: Unordered, O(1) operations, allows one null.<br>- <code>TreeSet</code>: Sorted, O(log n) operations, no nulls." },
+                    { q: "6. How do you iterate over a collection in Java?", a: "- <code>for</code> loop (arrays), <code>for-each</code> loop, <code>Iterator</code>, <code>ListIterator</code>, or <code>forEach()</code> (Java 8+ lambda)." },
+                    { q: "7. What are fail-fast and fail-safe iterators?", a: "- <strong>Fail-fast</strong>: Throws <code>ConcurrentModificationException</code> if collection is modified during iteration (e.g., <code>ArrayList</code>).<br>- <strong>Fail-safe</strong>: Works on a copy or allows modification (e.g., <code>CopyOnWriteArrayList</code>)." },
+                    { q: "8. How is ConcurrentHashMap different from HashMap?", a: "<code>ConcurrentHashMap</code> is thread-safe, uses segment locking (Java 7) or CAS (Java 8), allows concurrent reads/writes, doesn’t allow null keys/values." },
+                    { q: "9. What is a priority queue in Java?", a: "A queue where elements are ordered (natural order or custom comparator), implemented via a binary heap (<code>PriorityQueue</code> class)." },
+                    { q: "10. What is the difference between Queue and Deque?", a: "- <code>Queue</code>: Single-ended, FIFO (e.g., <code>LinkedList</code>).<br>- <code>Deque</code>: Double-ended, supports adding/removing from both ends (e.g., <code>ArrayDeque</code>)." },
+                    { q: "11. Explain Comparable and Comparator in Java.", a: "- <code>Comparable</code>: Interface for natural ordering (<code>compareTo()</code>), implemented by the class (e.g., <code>String</code>).<br>- <code>Comparator</code>: External comparison logic (<code>compare()</code>), used for custom sorting." },
+                    { q: "12. What is the difference between Stack and Queue?", a: "- <code>Stack</code>: LIFO (last-in, first-out).<br>- <code>Queue</code>: FIFO (first-in, first-out)." },
+                    { q: "13. What are weak references in Java?", a: "References (<code>WeakReference</code>) that allow GC to collect the object if no strong references exist; used in caching." },
+                    { q: "14. Explain the internal implementation of ArrayList.", a: "Uses a dynamic array. Starts with capacity 10, grows by 50% when full (new array created, elements copied)." },
+                    { q: "15. What is the difference between a shallow copy and a deep copy?", a: "- <strong>Shallow</strong>: Copies object references (nested objects still linked).<br>- <strong>Deep</strong>: Copies entire object graph (independent copies)." },
+                    { q: "16. What is the difference between Vector and ArrayList?", a: "- <code>Vector</code>: Synchronized, thread-safe, slower, grows by 100%.<br>- <code>ArrayList</code>: Not synchronized, faster, grows by 50%." },
+                    { q: "17. Explain the difference between IdentityHashMap and WeakHashMap.", a: "- <code>IdentityHashMap</code>: Uses <code>==</code> for key comparison, not <code>.equals()</code>.<br>- <code>WeakHashMap</code>: Keys are weak references, GC can remove entries." },
+                    { q: "18. What is EnumSet in Java?", a: "A specialized <code>Set</code> for enums, highly efficient, implemented as bit vectors." }
+                ]
+            },
+            {
+                category: "Multithreading (15 Questions)",
+                questions: [
+                    { q: "1. What is a thread in Java?", a: "A lightweight process within a program, enabling concurrent execution." },
+                    { q: "2. How do you create a thread in Java?", a: "- Extend <code>Thread</code> class and override <code>run()</code>.<br>- Implement <code>Runnable</code> interface and pass to <code>Thread</code>." },
+                    { q: "3. Explain the difference between Runnable and Thread.", a: "- <code>Runnable</code>: Interface with <code>run()</code>, allows resource sharing.<br>- <code>Thread</code>: Class implementing <code>Runnable</code>, creates a new thread." },
+                    { q: "4. What are daemon threads in Java?", a: "Background threads (e.g., GC) that terminate when all user threads finish." },
+                    { q: "5. What is thread synchronization?", a: "Coordinating thread access to shared resources to prevent data inconsistency using <code>synchronized</code> or locks." },
+                    { q: "6. What are the different types of thread synchronization?", a: "- <strong>Synchronized method</strong>: Locks entire method.<br>- <strong>Synchronized block</strong>: Locks specific code section.<br>- <strong>Locks</strong>: Explicit locking (e.g., <code>ReentrantLock</code>)." },
+                    { q: "7. What is a deadlock in Java?", a: "Two or more threads waiting indefinitely for resources each holds, causing a standstill." },
+                    { q: "8. What is a race condition, and how can it be avoided?", a: "Unexpected behavior due to unsynchronized access to shared data. Avoid via synchronization or atomic operations." },
+                    { q: "9. What are thread pools in Java?", a: "A pool of reusable threads managed by <code>ExecutorService</code> (e.g., <code>Executors.newFixedThreadPool()</code>), reducing overhead." },
+                    { q: "10. What is the volatile keyword used for?", a: "Ensures variable visibility across threads by preventing caching." },
+                    { q: "11. What is the difference between synchronized block and ReentrantLock?", a: "- <code>Synchronized block</code>: Implicit locking, simpler.<br>- <code>ReentrantLock</code>: Explicit, more flexible (e.g., tryLock, fairness)." },
+                    { q: "12. What is the ThreadLocal class in Java?", a: "Provides thread-local variables; each thread has its own copy." },
+                    { q: "13. What is the ExecutorService framework?", a: "A higher-level thread management API for executing tasks asynchronously (e.g., thread pools)." },
+                    { q: "14. What is the difference between Callable and Runnable?", a: "- <code>Runnable</code>: <code>run()</code> returns void, no exceptions.<br>- <code>Callable</code>: <code>call()</code> returns a value, can throw exceptions." },
+                    { q: "15. How does the CountDownLatch work?", a: "Allows threads to wait until a set of operations completes (count reaches zero)." }
+                ]
+            },
+            {
+                category: "JVM & Garbage Collection (12 Questions)",
+                questions: [
+                    { q: "1. What is the JVM, and how does it work?", a: "JVM executes Java bytecode, providing platform independence via class loading, bytecode interpretation, and runtime management." },
+                    { q: "2. What are the different memory areas in JVM?", a: "- <strong>Heap</strong>: Object storage.<br>- <strong>Stack</strong>: Method calls and local variables.<br>- <strong>Method Area</strong>: Class metadata, static variables.<br>- <strong>PC Register</strong>: Current instruction pointer.<br>- <strong>Native Method Stack</strong>: Native code execution." },
+                    { q: "3. What are garbage collection algorithms in Java?", a: "- <strong>Mark-and-Sweep</strong>: Marks live objects, sweeps rest.<br>- <strong>Copying</strong>: Moves live objects to new space.<br>- <strong>Mark-and-Compact</strong>: Compacts memory after marking." },
+                    { q: "4. What is the difference between Serial, Parallel, and G1GC collectors?", a: "- <strong>Serial</strong>: Single-threaded, for small apps.<br>- <strong>Parallel</strong>: Multi-threaded, high throughput.<br>- <strong>G1GC</strong>: Region-based, low latency, for large heaps." },
+                    { q: "5. What is the difference between Stack and Heap memory?", a: "- <strong>Stack</strong>: LIFO, method-local, fast, fixed size.<br>- <strong>Heap</strong>: Dynamic, object storage, GC-managed." },
+                    { q: "6. What is a memory leak in Java?", a: "Unreferenced objects that GC can’t reclaim due to unintended references." },
+                    { q: "7. What is the difference between Strong, Weak, Soft, and Phantom references?", a: "- <strong>Strong</strong>: Prevents GC (normal reference).<br>- <strong>Weak</strong>: GC collects if only weak refs exist.<br>- <strong>Soft</strong>: GC collects under memory pressure.<br>- <strong>Phantom</strong>: Notifies when object is GC’d." },
+                    { q: "8. How does the finalize() method work in Java?", a: "Called by GC before reclaiming an object; unreliable, deprecated in Java 9." },
+                    { q: "9. What are Metaspace and PermGen?", a: "- <strong>PermGen</strong>: Pre-Java 8, fixed-size for class metadata.<br>- <strong>Metaspace</strong>: Java 8+, dynamic size, uses native memory." },
+                    { q: "10. What is the difference between minor GC and major GC?", a: "- <strong>Minor</strong>: Cleans Young generation.<br>- <strong>Major</strong>: Cleans Old generation (full GC)." },
+                    { q: "11. How does the JVM optimize garbage collection?", a: "Uses generational approach, JIT compilation, and adaptive algorithms." },
+                    { q: "12. What tools can be used for JVM monitoring?", a: "JVisualVM, JConsole, JMX, VisualGC, GC logs." }
+                ]
+            },
+            {
+                category: "Spring & Spring Boot (20 Questions)",
+                questions: [
+                    { q: "1. What is Spring Framework?", a: "A Java framework for enterprise applications, providing DI, AOP, MVC, and more." },
+                    { q: "2. What are the main features of Spring Boot?", a: "Auto-configuration, embedded servers, starters, simplified dependency management." },
+                    { q: "3. What is dependency injection in Spring?", a: "Spring injects dependencies (e.g., beans) into objects via constructor, setter, or field injection." },
+                    { q: "4. Explain the difference between @Component, @Service, and @Repository annotations.", a: "- <code>@Component</code>: General-purpose bean.<br>- <code>@Service</code>: Business logic layer.<br>- <code>@Repository</code>: Data access layer, adds exception translation." },
+                    { q: "5. What is the Spring Bean lifecycle?", a: "Instantiation → Dependency Injection → Initialization (<code>@PostConstruct</code>) → Use → Destruction (<code>@PreDestroy</code>)." },
+                    { q: "6. What is the difference between @Bean and @Component?", a: "- <code>@Bean</code>: Method-level, manual bean definition in <code>@Configuration</code>.<br>- <code>@Component</code>: Class-level, auto-detected." },
+                    { q: "7. What are the different types of dependency injection in Spring?", a: "- <strong>Constructor</strong>: Preferred, immutable.<br>- <strong>Setter</strong>: Optional dependencies.<br>- <strong>Field</strong>: Via <code>@Autowired</code>, less explicit." },
+                    { q: "8. What is Spring Boot Auto Configuration?", a: "Automatically configures beans based on classpath and properties (e.g., <code>spring-boot-starter-web</code>)." },
+                    { q: "9. How does Spring Boot handle externalized configuration?", a: "Via <code>application.properties</code>/<code>application.yml</code>, environment variables, or command-line args." },
+                    { q: "10. What is Spring AOP, and what are its use cases?", a: "Aspect-Oriented Programming for cross-cutting concerns (e.g., logging, security, transactions)." },
+                    { q: "11. What is a @Transactional annotation, and how does it work?", a: "Manages transactions declaratively, ensuring ACID properties via proxies." },
+                    { q: "12. How do you handle exceptions in Spring Boot?", a: "Using <code>@ControllerAdvice</code> and <code>@ExceptionHandler</code> for centralized exception handling." },
+                    { q: "13. What is Spring Security, and how does it work?", a: "Secures apps with authentication (who) and authorization (what), using filters and configurations." },
+                    { q: "14. What are the different scopes of Spring Beans?", a: "- <code>singleton</code> (default), <code>prototype</code>, <code>request</code>, <code>session</code>, <code>global-session</code>." },
+                    { q: "15. How do you implement pagination and sorting in Spring Boot?", a: "Use <code>Pageable</code> in repository methods (e.g., <code>findAll(Pageable pageable)</code>)." },
+                    { q: "16. How does Spring Boot integrate with databases?", a: "Via Spring Data JPA, Hibernate, and JDBC starters (e.g., <code>spring-boot-starter-data-jpa</code>)." },
+                    { q: "17. What are Spring Profiles, and how do you use them?", a: "Environment-specific configurations (e.g., <code>dev</code>, <code>prod</code>) activated via <code>spring.profiles.active</code>." },
+                    { q: "18. What is the difference between RestController and Controller in Spring Boot?", a: "- <code>@Controller</code>: MVC, returns views.<br>- <code>@RestController</code>: REST API, returns data (e.g., JSON)." },
+                    { q: "19. How do you secure a REST API using OAuth2 in Spring Boot?", a: "Use Spring Security OAuth2 with <code>@EnableAuthorizationServer</code> and <code>@EnableResourceServer</code>." },
+                    { q: "20. What are the advantages of using Spring Cloud in microservices architecture?", a: "Service discovery, config management, load balancing, circuit breakers." }
+                ]
+            },
+            {
+                category: "Microservices (15 Questions)",
+                questions: [
+                    { q: "1. What is a microservices architecture?", a: "Small, independent services communicating via APIs, each handling a specific function." },
+                    { q: "2. What are the main benefits of microservices?", a: "Scalability, independent deployment, technology diversity, resilience." },
+                    { q: "3. What are some challenges in microservices architecture?", a: "Distributed system complexity, data consistency, inter-service communication, monitoring." },
+                    { q: "4. What is the role of an API Gateway in microservices?", a: "Single entry point for routing, authentication, rate limiting (e.g., Netflix Zuul)." },
+                    { q: "5. How do microservices communicate with each other?", a: "Synchronous (REST, gRPC) or asynchronous (message queues like Kafka)." },
+                    { q: "6. What is service discovery in microservices?", a: "Services locate each other dynamically (e.g., Eureka, Consul)." },
+                    { q: "7. What is circuit breaker pattern in microservices?", a: "Prevents cascading failures by stopping calls to failing services (e.g., Hystrix)." },
+                    { q: "8. What are the different types of service-to-service communication?", a: "- <strong>Synchronous</strong>: HTTP/REST, gRPC.<br>- <strong>Asynchronous</strong>: Messaging (Kafka, RabbitMQ)." },
+                    { q: "9. How do you handle distributed transactions in microservices?", a: "Use Saga pattern (choreography or orchestration) instead of 2PC." },
+                    { q: "10. What is CQRS, and why is it used in microservices?", a: "Command Query Responsibility Segregation separates read/write operations for scalability." },
+                    { q: "11. What is event-driven architecture, and how is it implemented in microservices?", a: "Services react to events (e.g., via Kafka) for loose coupling." },
+                    { q: "12. How do you ensure data consistency across microservices?", a: "Eventual consistency using events or compensating transactions." },
+                    { q: "13. What is Kubernetes, and how does it help in deploying microservices?", a: "Container orchestration platform for scaling, deployment, and management." },
+                    { q: "14. What is the difference between monolithic and microservices architecture?", a: "- <strong>Monolithic</strong>: Single unit, tightly coupled.<br>- <strong>Microservices</strong>: Independent, loosely coupled." },
+                    { q: "15. What are best practices for logging and monitoring in microservices?", a: "Centralized logging (ELK), distributed tracing (Zipkin), metrics (Prometheus)." }
+                ]
+            },
+            {
+                category: "Kafka & Messaging (10 Questions)",
+                questions: [
+                    { q: "1. What is Apache Kafka?", a: "Distributed streaming platform for high-throughput, fault-tolerant messaging." },
+                    { q: "2. How does Kafka work?", a: "Producers send messages to topics (partitioned logs), consumed by consumers via brokers." },
+                    { q: "3. What are Kafka producers, consumers, and brokers?", a: "- <strong>Producers</strong>: Send messages.<br>- <strong>Consumers</strong>: Read messages.<br>- <strong>Brokers</strong>: Store and manage messages." },
+                    { q: "4. What is Kafka partitioning, and how does it impact performance?", a: "Topics split into partitions for parallelism and scalability; more partitions improve throughput." },
+                    { q: "5. How does Kafka ensure message durability?", a: "Replicates data across brokers, persists to disk." },
+                    { q: "6. What is a Kafka consumer group?", a: "Group of consumers sharing load; each partition assigned to one consumer." },
+                    { q: "7. What is the difference between at-most-once, at-least-once, and exactly-once message delivery?", a: "- <strong>At-most-once</strong>: May lose messages.<br>- <strong>At-least-once</strong>: May duplicate.<br>- <strong>Exactly-once</strong>: Guaranteed delivery without duplicates (Kafka 0.11+)." },
+                    { q: "8. How do you handle failures in Kafka consumers?", a: "Offset management, retries, dead-letter queues." },
+                    { q: "9. What is Kafka Streams, and how does it differ from traditional consumers?", a: "Library for stream processing (e.g., transformations) vs. raw message consumption." },
+                    { q: "10. How do you monitor Kafka performance and health?", a: "Metrics (lag, throughput) via JMX, tools like Prometheus/Grafana." }
+                ]
+            },
+            {
+                category: "SQL (15 Questions)",
+                questions: [
+                    { q: "1. What is the difference between SQL and NoSQL databases?", a: "- <strong>SQL</strong>: Relational, structured, schema-based (e.g., MySQL).<br>- <strong>NoSQL</strong>: Non-relational, flexible, schema-less (e.g., MongoDB)." },
+                    { q: "2. What are the different types of SQL joins?", a: "INNER, LEFT, RIGHT, FULL, CROSS." },
+                    { q: "3. Explain the difference between INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL JOIN.", a: "- <strong>INNER</strong>: Matching rows only.<br>- <strong>LEFT</strong>: All from left table, matched from right.<br>- <strong>RIGHT</strong>: All from right table, matched from left.<br>- <strong>FULL</strong>: All rows, with NULLs where no match." },
+                    { q: "4. What is normalization? Explain its different forms.", a: "Reduces redundancy: <br>- <strong>1NF</strong>: No repeating groups.<br>- <strong>2NF</strong>: 1NF + no partial dependency.<br>- <strong>3NF</strong>: 2NF + no transitive dependency." },
+                    { q: "5. What is denormalization, and when should it be used?", a: "Adds redundancy for performance (e.g., reporting, read-heavy systems)." },
+                    { q: "6. What are indexes in SQL? Explain clustered and non-clustered indexes.", a: "Speed up queries: <br>- <strong>Clustered</strong>: Physically orders table (1 per table).<br>- <strong>Non-clustered</strong>: Separate structure with pointers (multiple allowed)." },
+                    { q: "7. What is the difference between HAVING and WHERE clauses?", a: "- <code>WHERE</code>: Filters rows before aggregation.<br>- <code>HAVING</code>: Filters groups after aggregation." },
+                    { q: "8. What is a stored procedure, and how does it differ from a function?", a: "- <strong>Stored Procedure</strong>: Precompiled SQL, no return value required.<br>- <strong>Function</strong>: Returns a value, used in expressions." },
+                    { q: "9. What are ACID properties in a database?", a: "- <strong>Atomicity</strong>: All or nothing.<br>- <strong>Consistency</strong>: Valid state.<br>- <strong>Isolation</strong>: Concurrent transactions independent.<br>- <strong>Durability</strong>: Committed changes persist." },
+                    { q: "10. What is the difference between DELETE, TRUNCATE, and DROP?", a: "- <code>DELETE</code>: Removes rows, reversible.<br>- <code>TRUNCATE</code>: Removes all rows, resets table, faster.<br>- <code>DROP</code>: Deletes entire table." },
+                    { q: "11. How does database transaction management work?", a: "Ensures ACID via <code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>." },
+                    { q: "12. What is a deadlock in SQL, and how can it be avoided?", a: "Transactions waiting on each other’s resources; avoid via proper locking order, timeouts." },
+                    { q: "13. What is the difference between VARCHAR and TEXT data types?", a: "- <code>VARCHAR</code>: Variable length, limited size.<br>- <code>TEXT</code>: Larger, no length constraint." },
+                    { q: "14. What is the purpose of GROUP BY in SQL?", a: "Groups rows for aggregate functions (e.g., <code>COUNT</code>, <code>SUM</code>)." },
+                    { q: "15. What are database views and their advantages?", a: "Virtual tables from queries; simplify access, enhance security." }
+                ]
+            },
+            {
+                category: "AWS & Cloud Computing (12 Questions)",
+                questions: [
+                    { q: "1. What are the core services of AWS?", a: "EC2 (compute), S3 (storage), RDS (database), Lambda (serverless), VPC (networking)." },
+                    { q: "2. What is the difference between EC2 and Lambda?", a: "- <strong>EC2</strong>: Virtual servers, full control.<br>- <strong>Lambda</strong>: Serverless, event-driven, pay-per-use." },
+                    { q: "3. What is AWS IAM, and how does it help in security?", a: "Identity and Access Management; controls user permissions." },
+                    { q: "4. What is the difference between S3 Standard, S3 IA, and S3 Glacier?", a: "- <strong>S3 Standard</strong>: Frequent access, high cost.<br>- <strong>S3 IA</strong>: Infrequent access, lower cost.<br>- <strong>S3 Glacier</strong>: Archival, cheapest, slow retrieval." },
+                    { q: "5. What is an AWS VPC, and why is it used?", a: "Virtual Private Cloud; isolated network for resources, enhances security." },
+                    { q: "6. What is the difference between ECS and EKS?", a: "- <strong>ECS</strong>: AWS-managed container service.<br>- <strong>EKS</strong>: Managed Kubernetes service." },
+                    { q: "7. How does AWS Auto Scaling work?", a: "Adjusts resource capacity based on demand (e.g., EC2 instances)." },
+                    { q: "8. What is AWS CloudFormation, and how does it help in infrastructure as code?", a: "Templates (JSON/YAML) to provision resources consistently." },
+                    { q: "9. What is AWS RDS, and how does it differ from DynamoDB?", a: "- <strong>RDS</strong>: Relational database (e.g., MySQL).<br>- <strong>DynamoDB</strong>: NoSQL, fully managed, scalable." },
+                    { q: "10. What is AWS Fargate, and when should it be used?", a: "Serverless container management for ECS/EKS; use for simplicity." },
+                    { q: "11. What are AWS security best practices?", a: "IAM roles, least privilege, MFA, encryption, logging." },
+                    { q: "12. What is the difference between AWS CloudTrail and AWS CloudWatch?", a: "- <strong>CloudTrail</strong>: Audits API calls.<br>- <strong>CloudWatch</strong>: Monitors metrics, logs." }
+                ]
+            },
+            {
+                category: "Design Patterns (18 Questions)",
+                questions: [
+                    { q: "1. What are design patterns, and why are they important?", a: "Reusable solutions to common problems; improve code maintainability." },
+                    { q: "2. What is the Singleton pattern, and how is it implemented in Java?", a: "One instance; use private constructor, static method (e.g., <code>getInstance()</code>)." },
+                    { q: "3. What is the Factory Method pattern, and when should it be used?", a: "Creates objects via subclasses; use for flexible instantiation." },
+                    { q: "4. Explain the Prototype pattern with an example.", a: "Clones objects; e.g., <code>clone()</code> in Java for copying." },
+                    { q: "5. What is the Builder pattern, and how does it help in object creation?", a: "Constructs complex objects step-by-step (e.g., <code>StringBuilder</code>)." },
+                    { q: "6. What is the Adapter pattern, and where is it used?", a: "Converts interfaces; e.g., legacy system integration." },
+                    { q: "7. What is the Decorator pattern, and how does it work?", a: "Adds behavior dynamically; e.g., Java I/O streams." },
+                    { q: "8. What is the Observer pattern, and how does it help in event handling?", a: "Notifies dependents; e.g., <code>java.util.Observer</code>." },
+                    { q: "9. Explain the Strategy pattern with an example.", a: "Interchangeable algorithms; e.g., sorting strategies." },
+                    { q: "10. What is the Template Method pattern, and where is it used?", a: "Defines algorithm skeleton; e.g., abstract class with hooks." },
+                    { q: "11. What is the Facade pattern, and how does it simplify system design?", a: "Unified interface; e.g., JDBC API." },
+                    { q: "12. What is the Command pattern, and how does it help in request handling?", a: "Encapsulates requests; e.g., undo operations." },
+                    { q: "13. Explain the Chain of Responsibility pattern with an example.", a: "Passes requests along handlers; e.g., logging levels." },
+                    { q: "14. What is the Proxy pattern, and where is it used?", a: "Controls access; e.g., lazy loading." },
+                    { q: "15. What is the Flyweight pattern, and how does it optimize memory usage?", a: "Shares objects; e.g., string pooling." },
+                    { q: "16. What is the State pattern, and how does it help in state management?", a: "Encapsulates state behavior; e.g., workflow states." },
+                    { q: "17. What is the Mediator pattern, and how does it help in reducing dependencies?", a: "Centralizes communication; e.g., chat systems." },
+                    { q: "18. Explain the difference between structural, creational, and behavioral design patterns.", a: "- <strong>Creational</strong>: Object creation (e.g., Singleton).<br>- <strong>Structural</strong>: Relationships (e.g., Adapter).<br>- <strong>Behavioral</strong>: Interaction (e.g., Observer)." }
+                ]
+            },
+            {
+                category: "Coding Principles (12 Questions)",
+                questions: [
+                    { q: "1. What are SOLID principles in software design?", a: "- <strong>S</strong>: Single Responsibility.<br>- <strong>O</strong>: Open/Closed.<br>- <strong>L</strong>: Liskov Substitution.<br>- <strong>I</strong>: Interface Segregation.<br>- <strong>D</strong>: Dependency Inversion." },
+                    { q: "2. Explain the Single Responsibility Principle (SRP) with an example.", a: "A class should have one reason to change; e.g., separate <code>User</code> and <code>UserPersistance</code>." },
+                    { q: "3. What is the Open/Closed Principle (OCP)?", a: "Open for extension, closed for modification (e.g., via polymorphism)." },
+                    { q: "4. Explain the Liskov Substitution Principle (LSP).", a: "Subtypes must be substitutable for base types without breaking behavior." },
+                    { q: "5. What is the Interface Segregation Principle (ISP)?", a: "Clients shouldn’t depend on unneeded interfaces." },
+                    { q: "6. Explain the Dependency Inversion Principle (DIP).", a: "High-level modules depend on abstractions, not concrete classes." },
+                    { q: "7. What is DRY (Don't Repeat Yourself) principle?", a: "Avoid code duplication via reuse." },
+                    { q: "8. What is KISS (Keep It Simple, Stupid) principle?", a: "Favor simplicity over complexity." },
+                    { q: "9. What is YAGNI (You Ain't Gonna Need It) principle?", a: "Don’t add unnecessary features." },
+                    { q: "10. Explain the Law of Demeter (LoD) in software design.", a: "Objects only talk to immediate friends, reducing coupling." },
+                    { q: "11. What is Test-Driven Development (TDD)?", a: "Write tests first, then code to pass them." },
+                    { q: "12. What is Behavior-Driven Development (BDD)?", a: "Extends TDD with behavior specs (e.g., Gherkin)." }
+                ]
+            },
+            {
+                category: "Problem-Solving & Coding (18 Questions)",
+                questions: [
+                    { q: "1. How do you reverse a string in Java?", a: "Use <code>StringBuilder.reverse()</code> or loop backwards." },
+                    { q: "2. How do you check if a number is prime?", a: "Check divisibility up to sqrt(n)." },
+                    { q: "3. Write a program to find the factorial of a number.", a: "<pre>long factorial(int n) { return n <= 1 ? 1 : n * factorial(n - 1); }</pre>" },
+                    { q: "4. How do you check if a string is a palindrome?", a: "Compare with its reverse or use two pointers." },
+                    { q: "5. Write a program to generate the Fibonacci series.", a: "<pre>void fibonacci(int n) { int a = 0, b = 1; for (int i = 0; i < n; i++) { System.out.print(a + \" \"); int c = a + b; a = b; b = c; } }</pre>" },
+                    { q: "6. How do you find the largest and smallest numbers in an array?", a: "Iterate with min/max variables." },
+                    { q: "7. Write a program to sort an array using quicksort.", a: "<pre>void quickSort(int[] arr, int low, int high) { if (low < high) { int pi = partition(arr, low, high); quickSort(arr, low, pi - 1); quickSort(arr, pi + 1, high); } }</pre>" },
+                    { q: "8. How do you remove duplicates from an array?", a: "Use <code>Set</code> or sort and compare adjacent elements." },
+                    { q: "9. How do you check if two strings are anagrams?", a: "Sort both, then compare, or use character frequency." },
+                    { q: "10. Implement a binary search algorithm.", a: "<pre>int binarySearch(int[] arr, int target) { int left = 0, right = arr.length - 1; while (left <= right) { int mid = left + (right - left) / 2; if (arr[mid] == target) return mid; if (arr[mid] < target) left = mid + 1; else right = mid - 1; } return -1; }</pre>" },
+                    { q: "11. How do you find the first non-repeating character in a string?", a: "Use a frequency map, then scan string." },
+                    { q: "12. How do you detect a loop in a linked list?", a: "Floyd’s cycle detection (two pointers)." },
+                    { q: "13. Write a program to merge two sorted linked lists.", a: "Use recursion or iteration with a dummy node." },
+                    { q: "14. How do you find the intersection point of two linked lists?", a: "Equalize lengths, then traverse together." },
+                    { q: "15. How do you implement a LRU (Least Recently Used) cache?", a: "Use <code>LinkedHashMap</code> or a doubly-linked list + hash map." },
+                    { q: "16. Write a program to implement a producer-consumer model using threads.", a: "Use <code>BlockingQueue</code> or <code>wait()/notify()</code>." },
+                    { q: "17. How do you implement a thread-safe singleton class in Java?", a: "Use <code>enum</code>, double-checked locking, or static holder." },
+                    { q: "18. What are some common time complexities of sorting algorithms?", a: "- Bubble: O(n²)<br>- Quicksort: O(n log n)<br>- Merge: O(n log n)" }
+                ]
+            }
+        ];
+
+        let expandedCount = 0;
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            questionsData.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                categoryDiv.innerHTML = `
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <h2>${category.category}</h2>
+                        <span>▼</span>
+                    </div>
+                    <div class="questions-wrapper">
+                `;
+                
+                const questionsWrapper = categoryDiv.querySelector('.questions-wrapper');
+                category.questions.forEach(q => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'question';
+                    questionDiv.innerHTML = `
+                        <div class="question-header" onclick="toggleAnswer(this)">
+                            ${q.q}
+                            <span>▼</span>
+                        </div>
+                        <div class="answer">${q.a}</div>
+                    `;
+                    questionsWrapper.appendChild(questionDiv);
+                });
+                
+                categoryDiv.appendChild(questionsWrapper);
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        function toggleCategory(element) {
+            const wrapper = element.nextElementSibling;
+            const arrow = element.querySelector('span');
+            if (wrapper.style.display === 'block') {
+                wrapper.style.display = 'none';
+                arrow.textContent = '▼';
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                wrapper.style.display = 'block';
+                arrow.textContent = '▲';
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function toggleAnswer(element) {
+            const answer = element.nextElementSibling;
+            const arrow = element.querySelector('span');
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                arrow.textContent = '▼';
+                arrow.style.transform = 'rotate(0deg)';
+                expandedCount--;
+            } else {
+                answer.style.display = 'block';
+                arrow.textContent = '▲';
+                arrow.style.transform = 'rotate(180deg)';
+                expandedCount++;
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            progress.textContent = `Progress: ${expandedCount}/215`;
+        }
+
+        function searchQuestions() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const categories = document.querySelectorAll('.category');
+            categories.forEach(category => {
+                const questions = category.querySelectorAll('.question');
+                let hasVisibleQuestion = false;
+                questions.forEach(question => {
+                    const header = question.querySelector('.question-header').textContent.toLowerCase();
+                    if (header.includes(searchTerm)) {
+                        question.style.display = 'block';
+                        hasVisibleQuestion = true;
+                    } else {
+                        question.style.display = 'none';
+                    }
+                });
+                category.style.display = hasVisibleQuestion ? 'block' : 'none';
+                if (hasVisibleQuestion) {
+                    category.querySelector('.questions-wrapper').style.display = 'block';
+                    category.querySelector('.category-header span').textContent = '▲';
+                    category.querySelector('.category-header span').style.transform = 'rotate(180deg)';
+                }
+            });
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        window.onload = renderQuestions;
+    </script>
+</body>
+</html>
